@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 feature 'User replying to topic' do
-  let!(:posts) { posts_exist_in_a_topic }
+  let(:posts) { posts_exist_in_a_topic }
   let(:post) { posts.first_post }
+
   def login_and_visit_posts
+    posts # ensure they exist before login, not sure if important any more
     user.log_in
     puts "about to visit #{posts.path}"
     posts.visit_posts
@@ -36,6 +38,11 @@ feature 'User replying to topic' do
     expect(posts.post_form.content).to(start_with('>').and(end_with("\n\n")))
   end
 
+  scenario 'workaround selenium/driver bug', js: true do
+    user.log_in
+    # this theoretically may flush out the xhr from previous
+  end
+
   describe 'using dropdown', js: true do
     shared_examples_for 'user can be mentioned' do
       scenario 'can be mentioned' do
@@ -47,6 +54,12 @@ feature 'User replying to topic' do
         expect(find_field('Content').value).to include(other_user_mention)
         expect(page).not_to have_css('.thredded--textcomplete-dropdown')
       end
+
+      scenario 'workaround selenium/driver bug', js: true do
+        user.log_in
+        # this theoretically may flush out the xhr from previous
+      end
+
     end
 
     context '(with a user with space in their name)' do
