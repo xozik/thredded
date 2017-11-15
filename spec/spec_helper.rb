@@ -151,6 +151,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
     config.append_after(:each) do
       DatabaseCleaner.clean
     end
+    config.raise_server_errors = false if ENV['TRAVIS']
   end
 end
 
