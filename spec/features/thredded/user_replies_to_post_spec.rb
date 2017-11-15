@@ -7,6 +7,7 @@ feature 'User replying to topic' do
   let(:post) { posts.first_post }
   def login_and_visit_posts
     user.log_in
+    puts "about to visit #{posts.path}"
     posts.visit_posts
   end
 
